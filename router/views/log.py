@@ -8,6 +8,8 @@ from router.serializers import LogSerializer
 
 
 class LogList(APIView):
+    serializer_class = LogSerializer
+
     def get(self, request, service_id, session_id):
         session: Session = get_object_or_404(Session, id=session_id, service__id=service_id, service__user=request.user)
         logs = session.log_set.all().order_by('-datetime')
@@ -16,6 +18,8 @@ class LogList(APIView):
 
 
 class LogDetail(APIView):
+    serializer_class = LogSerializer
+
     def get_object(self, service_id, session_id, log_id):
         return get_object_or_404(
             Log,

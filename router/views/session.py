@@ -12,6 +12,8 @@ from router.serializers import SessionSerializer
 
 
 class SessionList(APIView):
+    serializer_class = SessionSerializer
+
     def get(self, request: Request, service_id):
         sessions = Session.objects.filter(service__id=service_id, service__user=request.user)
         serializer = SessionSerializer(sessions, many=True)
@@ -27,6 +29,8 @@ class SessionList(APIView):
 
 
 class SessionDetail(APIView):
+    serializer_class = SessionSerializer
+
     def get_object(self, service_id, session_id) -> Session:
         return get_object_or_404(Session, id=session_id, service__id=service_id, service__user=self.request.user)
 
@@ -47,4 +51,3 @@ class SessionDetail(APIView):
         session = self.get_object(service_id, session_id)
         session.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-

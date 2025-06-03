@@ -9,6 +9,7 @@ from router.serializers import ServiceSerializer
 
 
 class ServiceList(APIView):
+    serializer_class = ServiceSerializer
 
     def get(self, request: Request):
         services = Service.objects.filter(user=request.user)
@@ -24,6 +25,8 @@ class ServiceList(APIView):
 
 
 class ServiceDetail(APIView):
+    serializer_class = ServiceSerializer
+
     def get_object(self, service_id):
         return get_object_or_404(Service, id=service_id, user=self.request.user)
 
