@@ -27,6 +27,7 @@ class Service(models.Model):
     name = models.CharField(max_length=255)
     app = models.ForeignKey(App, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    port = models.PositiveIntegerField(default=8000)
     active = models.BooleanField(default=True)
     token = models.CharField(max_length=255)
 
