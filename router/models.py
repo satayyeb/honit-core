@@ -64,3 +64,5 @@ class Log(models.Model):
     datetime = models.DateTimeField(default=timezone.now)
     request = models.TextField()
     response = models.TextField()
+    input_tokens = models.PositiveIntegerField(default=0)
+    output_tokens = models.PositiveIntegerField(default=0)

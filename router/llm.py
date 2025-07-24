@@ -17,5 +17,10 @@ class LLMApi:
                 {'role': 'user', 'content': message},
             ]
         )
-        model_output = completion.choices[0].message.content
-        return Log.objects.create(session=session, request=message, response=model_output)
+        return Log.objects.create(
+            session=session,
+            request=message,
+            response=completion.choices[0].message.content,
+            input_tokens=completion.usage.prompt_tokens,
+            output_tokens=completion.usage.completion_tokens,
+        )
