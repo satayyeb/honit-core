@@ -12,14 +12,14 @@ class AppAdmin(admin.ModelAdmin):
 
 @register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['name', 'app', 'active']
 
 
 @register(Session)
 class SessionAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['service', 'datetime']
 
 
 @register(Log)
 class LogAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['session', 'datetime']

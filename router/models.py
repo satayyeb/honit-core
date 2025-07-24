@@ -7,6 +7,7 @@ from django.utils import timezone
 
 class AppType(models.TextChoices):
     SSH = 'SSH'
+    K8S = 'K8S'
 
 
 class App(models.Model):
@@ -23,13 +24,14 @@ class App(models.Model):
 
 
 class Service(models.Model):
+    name = models.CharField(max_length=255)
     app = models.ForeignKey(App, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     token = models.CharField(max_length=255)
 
     def __str__(self):
-        return f'{self.app} ({self.user})'
+        return self.name
 
     def save(self, *args, **kwargs):
         if not self.token:
@@ -40,6 +42,21 @@ class Service(models.Model):
 class Session(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     datetime = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.service.name
+
+    @property
+    def logs(self):
+        return self.log_set.all().order_by('datetime')
+
+    @property
+    def context(self):
+        context = [{'role': 'system', 'content': self.service.app.master_prompt}]
+        for log in self.logs:
+            context.append({'role': 'user', 'content': log.request})
+            context.append({'role': 'assistant', 'content': log.response})
+        return context
 
 
 class Log(models.Model):

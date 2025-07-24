@@ -12,20 +12,26 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+from deployconfigs import DjangoConfigs
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / 'data'
+
+conf = DjangoConfigs(default_conf_file=BASE_DIR / 'default.conf', extra_conf_file=BASE_DIR / 'local.conf')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9l6#fc=2hflf&#!a*vg@53=x7t@vdi81e$rv6#d99&_)1l%go6'
+SECRET_KEY = conf.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = conf.get_bool('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = conf.allowed_hosts_list()
+CORS_ALLOWED_ORIGINS = conf.get_list('CORS_ALLOWED_ORIGINS')
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
@@ -36,12 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'drf_spectacular',
     'router',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -139,3 +147,7 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
+
+OPENAI_BASE_URL = conf.get('OPENAI_BASE_URL')
+OPENAI_API_KEY = conf.get('OPENAI_API_KEY')
+OPENAI_MODEL_NAME = conf.get('OPENAI_MODEL_NAME')
