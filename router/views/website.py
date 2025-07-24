@@ -1,15 +1,13 @@
-import requests
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
-from requests.auth import HTTPBasicAuth
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from router.models import Service, Session
+from router.models import Service, Session, App
+from router.serializers import ServiceSerializer
 
-API_BASE = 'http://127.0.0.1:8000/api/v1'
 
 @login_required
 def list_services(request):
@@ -17,34 +15,34 @@ def list_services(request):
     return render(request, 'services.html', {'services': services})
 
 
-@csrf_exempt
+@login_required
 def create_service(request):
     if request.method == 'POST':
-        name = request.POST['name']
-        port = request.POST['port']
-        app_id = request.POST['app']  # needs a dropdown in the form
-        data = {'name': name, 'app': app_id, 'port': port}
-        auth = HTTPBasicAuth('admin', 'admin')
-        requests.post(f'{API_BASE}/services/', json=data, auth=auth)
-        return redirect('list_services')
+        serializer = ServiceSerializer(data=request.POST)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return redirect('list_services')
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
-        # fetch app list for dropdown if needed
-        apps = requests.get(f'{API_BASE}/apps', auth=HTTPBasicAuth('admin', 'admin')).json()
+        apps = App.objects.all()
         return render(request, 'create_service.html', {'apps': apps})
 
 
+@login_required
 def list_sessions(request, service_id):
-    sessions = Session.objects.filter(service_id=service_id)
-    # response = requests.get(f'{API_BASE}/services/{service_id}/sessions/', auth=HTTPBasicAuth('admin', 'admin'))
-    # sessions = response.json() if response.ok else []
+    sessions = Session.objects.filter(service_id=service_id, service__user=request.user)
     return render(request, 'sessions.html', {'sessions': sessions})
 
 
+@login_required
 def list_logs(request, service_id, session_id):
-    response = requests.get(f'{API_BASE}/services/{service_id}/sessions/{session_id}/logs',
-                            auth=HTTPBasicAuth('admin', 'admin'))
-    logs = response.json() if response.ok else []
-    return render(request, 'logs.html', {'logs': logs, 'session_id': session_id})
+    session = Session.objects.get(id=session_id, service_id=service_id, service__user=request.user)
+    return render(request, 'logs.html', {'logs': session.logs, 'service_id': service_id, 'session_id': session_id})
+
+
+def landing(request):
+    return render(request, 'landing.html')
+
 
 class BasicLoginView(APIView):
     authentication_classes = ()
@@ -62,7 +60,3 @@ class BasicLoginView(APIView):
             return redirect('list_services')
         else:
             return render(request, 'login.html', {'error': 'Invalid credentials'})
-
-
-def landing(request):
-    return render(request, 'landing.html')
