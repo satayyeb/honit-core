@@ -29,10 +29,10 @@
         <ul class="space-y-2">
             {% for session in sessions %}
                 <li class="relative bg-white p-4 rounded shadow group hover:bg-gray-50 transition">
-                    <a href="{% url 'session_logs' session.service session.id %}" class="absolute inset-0 z-10"></a>
+                    <a href="{% url 'session_logs' session.service.id session.id %}" class="absolute inset-0 z-10"></a>
                     <!-- The clickable box content -->
                     <div class="flex justify-between items-center">
-                        <a href="{% url 'session_logs' session.service session.id %}" class="block relative z-10">
+                        <a href="{% url 'session_logs' session.service.id session.id %}" class="block relative z-10">
                             <div class="text-lg font-medium">
                                 {{ session.datetime }}
                             </div>
@@ -40,7 +40,7 @@
                         </a>
 
                         <!-- Trash icon -->
-                        <button @click.stop="open = true;serviceId={{ session.service }}, sessionId = {{ session.id }}"
+                        <button @click.stop="open = true;serviceId={{ session.service.id }}, sessionId = {{ session.id }}"
                                 class="text-red-600 hover:text-red-800 transition z-20"
                                 title="Delete">
                             <i class="fa-solid fa-trash"></i>

@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI-Powered Honeypot as a Service</title>
+    <style>
+        /* Reset & base */
+        * {
+            box-sizing: border-box;
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #0f172a;
+            color: #e0e7ff;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            background: url('https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=1470&q=80') no-repeat center center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.7);
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 1rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #60a5fa; /* Tailwind blue-400 */
+            text-shadow: 0 0 10px rgba(96, 165, 250, 0.7);
+        }
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            color: #cbd5e1;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-get-started {
+            background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 1.125rem;
+            box-shadow: 0 8px 15px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .btn-get-started:hover,
+        .btn-get-started:focus {
+            background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+            box-shadow: 0 12px 24px rgba(96, 165, 250, 0.5);
+            outline: none;
+            transform: translateY(-2px);
+        }
+
+        /* Features Section */
+        .features {
+            background-color: #1e293b;
+            padding: 4rem 1rem;
+            text-align: center;
+        }
+        .features h2 {
+            font-size: 2.5rem;
+            color: #60a5fa;
+            margin-bottom: 2rem;
+        }
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .feature-item {
+            background: #334155;
+            padding: 2rem;
+            border-radius: 1rem;
+            flex: 1 1 250px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .feature-item:hover {
+            transform: translateY(-5px);
+        }
+        .feature-icon {
+            font-size: 3rem;
+            color: #60a5fa;
+            margin-bottom: 1rem;
+        }
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #bfdbfe;
+        }
+        .feature-desc {
+            color: #cbd5e1;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            background-color: #0f172a;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .features {
+                padding: 3rem 1rem;
+            }
+            .feature-list {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+    <!-- Optional: Add FontAwesome CDN for icons -->
+    <script src="https://kit.fontawesome.com/a81368914c.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<section class="hero">
+    <div class="container hero-content">
+        <h1>AI-Powered <br/> Honeypot as a Service <br/> network</h1>
+        <p>Detect, analyze, and neutralize cyber threats with intelligent honeypots powered by AI — fully managed and scalable.</p>
+        <a href="{% url 'list_services' %}" class="btn-get-started" role="button" aria-label="Get Started">Get Started</a>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <h2>Why Choose Our Platform?</h2>
+        <div class="feature-list">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                <div class="feature-title">AI-Driven Detection</div>
+                <div class="feature-desc">Leverage advanced machine learning models to detect and adapt to new threats in real-time.</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-cloud"></i></div>
+                <div class="feature-title">Cloud Native & Scalable</div>
+                <div class="feature-desc">Deploy honeypots anywhere on the cloud with easy scaling as your needs grow.</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="feature-title">Robust Security</div>
+                <div class="feature-desc">Keep your infrastructure safe while gathering critical threat intelligence seamlessly.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    &copy; {{ year }} Honit AI Platform — All rights reserved.
+</footer>
+
+</body>
+</html>

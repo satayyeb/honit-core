@@ -1,14 +1,19 @@
 import requests
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from requests.auth import HTTPBasicAuth
+from rest_framework.views import APIView
+
+from router.models import Service, Session
 
 API_BASE = 'http://127.0.0.1:8000/api/v1'
 
-
+@login_required
 def list_services(request):
-    response = requests.get(f'{API_BASE}/services/', auth=HTTPBasicAuth('admin', 'admin'))
-    services = response.json() if response.ok else []
+    services = Service.objects.filter(user=request.user)
     return render(request, 'services.html', {'services': services})
 
 
@@ -29,8 +34,9 @@ def create_service(request):
 
 
 def list_sessions(request, service_id):
-    response = requests.get(f'{API_BASE}/services/{service_id}/sessions/', auth=HTTPBasicAuth('admin', 'admin'))
-    sessions = response.json() if response.ok else []
+    sessions = Session.objects.filter(service_id=service_id)
+    # response = requests.get(f'{API_BASE}/services/{service_id}/sessions/', auth=HTTPBasicAuth('admin', 'admin'))
+    # sessions = response.json() if response.ok else []
     return render(request, 'sessions.html', {'sessions': sessions})
 
 
@@ -39,3 +45,24 @@ def list_logs(request, service_id, session_id):
                             auth=HTTPBasicAuth('admin', 'admin'))
     logs = response.json() if response.ok else []
     return render(request, 'logs.html', {'logs': logs, 'session_id': session_id})
+
+class BasicLoginView(APIView):
+    authentication_classes = ()
+    permission_classes = ()
+
+    def get(self, request):
+        return render(request, 'login.html')  # Your login form template
+
+    def post(self, request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect('list_services')
+        else:
+            return render(request, 'login.html', {'error': 'Invalid credentials'})
+
+
+def landing(request):
+    return render(request, 'landing.html')
