@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2 class="text-xl font-semibold mb-4">Sessions for Service #{{ service_id }}</h2>
+    <ul class="space-y-2">
+        {% for session in sessions %}
+            <li class="bg-white p-4 rounded shadow hover:bg-gray-50 transition">
+                <div class="flex justify-between items-center">
+                    <span>{{ session.datetime }}</span>
+                    <a href="{% url 'session_logs' service_id session.id %}" class="text-blue-500 hover:underline">View Logs</a>
+                </div>
+            </li>
+        {% empty %}
+            <li>No sessions found.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'list_services' %}" class="text-sm text-gray-600 mt-4 inline-block hover:underline">← Back to Services</a>
+{% endblock %}

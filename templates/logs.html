@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2 class="text-xl font-semibold mb-4">Logs for Session #{{ session_id }}</h2>
+    <ul class="space-y-2">
+        {% for log in logs %}
+            <li class="bg-white p-4 rounded shadow">
+                <p class="text-gray-700"><strong>Datetime:</strong> {{ log.datetime }}</p>
+                <p class="text-gray-700"><strong>Request:</strong> <code>{{ log.request }}</code></p>
+                <p class="text-gray-700"><strong>Response:</strong> <code>{{ log.response }}</code></p>
+            </li>
+        {% empty %}
+            <li>No logs found.</li>
+        {% endfor %}
+    </ul>
+{#    <a href="{% url 'session_logs' log.session.service.id session_id %}" class="text-sm text-gray-600 mt-4 inline-block hover:underline">← Back to Sessions</a>#}
+{% endblock %}
