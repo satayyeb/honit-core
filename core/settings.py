@@ -32,6 +32,7 @@ DEBUG = conf.get_bool('DEBUG')
 
 ALLOWED_HOSTS = conf.allowed_hosts_list()
 CORS_ALLOWED_ORIGINS = conf.get_list('CORS_ALLOWED_ORIGINS')
+CSRF_TRUSTED_ORIGINS = conf.get_list('CSRF_TRUSTED_ORIGINS')
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
