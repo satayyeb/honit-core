@@ -50,3 +50,11 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+  deploy_docker_image:
+    runs-on: ubuntu-latest
+    container: curlimages/curl:latest
+    needs: build-and-push-image
+    steps:
+      - name: deploy docker image
+        run: |
+          'curl -X POST -F DOCKER_TAG=main -H "Authorization: Bearer ${{secrets.KUBIT_WEBHOOK_TOKEN}}" ${{secrets.KUBIT_WEBHOOK_URL}}'
