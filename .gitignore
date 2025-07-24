@@ -1,5 +1,5 @@
 .idea
 .venv
-data
+*.sqlite3
 *.iml
 local.conf
