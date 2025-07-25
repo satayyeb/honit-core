@@ -7,9 +7,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
     gcc \
-    && rm -rf /var/lib/apt/lists/* \
-
-RUN mkdir -p app
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
