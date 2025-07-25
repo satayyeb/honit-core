@@ -14,11 +14,16 @@ jobs:
       image: docker:latest
       options: --user root
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to the Registry
+        run: docker login ${{ secrets.REGISTRY }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+
       - name: Build and push docker image
         run: |
           export TAG=${GITHUB_SHA::8}
           docker build . -t ${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}:${TAG}
-          docker login ${{ secrets.REGISTRY }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
           docker push ${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}:${TAG}
 
   deploy:
