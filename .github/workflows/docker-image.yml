@@ -1,4 +1,4 @@
-name: Create and publish a Docker image
+name: Build and deploy
 
 on:
   push:
@@ -10,47 +10,23 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-
+    container:
+      image: docker:latest
+      options: --user root
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Build and push docker image
+        run: |
+          export TAG=${GITHUB_SHA::8}
+          docker build . -t ${{ secrets.REGISTRY }}/${{ envs.IMAGE_NAME }}:${TAG}
+          docker login ${{ secrets.REGISTRY }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+          docker push ${{ secrets.REGISTRY }}/${{ envs.IMAGE_NAME }}:${TAG}
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-        with:
-          registry: ${{ secrets.REGISTRY }}
-          username: ${{ secrets.REGISTERY_USERNAME }}
-          password: ${{ secrets.REGISTERY_PASSWORD }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-          images: ${{ secrets.REGISTRY }}/${{ secrets.IMAGE_NAME }}
-      # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
-      # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see [Usage](https://github.com/docker/build-push-action#usage) in the README of the `docker/build-push-action` repository.
-      # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-  deploy_docker_image:
+  deploy:
     runs-on: ubuntu-latest
     container: curlimages/curl:latest
     needs: build-and-push-image
     steps:
-      - name: Deploy docker image
+      - name: Deploy on Kubit
         run: |
-          TAG=${GITHUB_SHA::8}
-          curl -X POST -F DOCKER_TAG=$TAG -H "Authorization: Bearer ${{ secrets.KUBIT_WEBHOOK_TOKEN }}" "${{ secrets.KUBIT_WEBHOOK_URL }}"
+          export TAG=${GITHUB_SHA::8}
+          curl -X POST -F DOCKER_TAG=${TAG} -H "Authorization: Bearer ${{ secrets.KUBIT_WEBHOOK_TOKEN }}" "${{ secrets.KUBIT_WEBHOOK_URL }}"
