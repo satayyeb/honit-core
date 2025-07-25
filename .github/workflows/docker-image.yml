@@ -34,4 +34,7 @@ jobs:
       - name: Deploy on Kubit
         run: |
           export TAG=${GITHUB_SHA::8}
-          curl -X POST -F DOCKER_TAG=${TAG} -H "Authorization: Bearer ${{ secrets.KUBIT_WEBHOOK_TOKEN }}" "${{ secrets.KUBIT_WEBHOOK_URL }}"
+          curl -X POST \
+          -F DOCKER_TAG=${TAG} \
+          -H "Authorization: Bearer ${{ secrets.KUBIT_WEBHOOK_TOKEN }}" \
+          "${{ secrets.KUBIT_WEBHOOK_URL }}"
