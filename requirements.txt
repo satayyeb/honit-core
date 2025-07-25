@@ -5,6 +5,7 @@ attrs==25.3.0
 certifi==2025.4.26
 cffi==1.17.1
 charset-normalizer==3.4.2
+click==8.2.1
 cryptography==45.0.5
 deployconfigs==1.3.4
 distro==1.9.0
@@ -24,6 +25,7 @@ jiter==0.10.0
 jsonschema==4.24.0
 jsonschema-specifications==2025.4.1
 openai==1.83.0
+psycopg==3.2.9
 pycparser==2.22
 pydantic==2.11.5
 pydantic_core==2.33.2
@@ -38,4 +40,5 @@ typing-inspection==0.4.1
 typing_extensions==4.14.0
 uritemplate==4.2.0
 urllib3==2.5.0
+uvicorn==0.35.0
 whitenoise==6.9.0
