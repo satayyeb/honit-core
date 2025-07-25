@@ -17,9 +17,9 @@ jobs:
       - name: Build and push docker image
         run: |
           export TAG=${GITHUB_SHA::8}
-          docker build . -t ${{ secrets.REGISTRY }}/${{ envs.IMAGE_NAME }}:${TAG}
+          docker build . -t ${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}:${TAG}
           docker login ${{ secrets.REGISTRY }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
-          docker push ${{ secrets.REGISTRY }}/${{ envs.IMAGE_NAME }}:${TAG}
+          docker push ${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}:${TAG}
 
   deploy:
     runs-on: ubuntu-latest
